@@ -1,10 +1,15 @@
 package nic.bastar.emp.Services.Impl;
 
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import nic.bastar.emp.DTO.DepartmentDto;
 import nic.bastar.emp.Entity.Department;
+import nic.bastar.emp.Exception.ResourceNotFoundException;
 import nic.bastar.emp.Mapper.DepartmentMapper;
 import nic.bastar.emp.Repository.DepartmentRepository;
 import nic.bastar.emp.Services.DepartmentService;
@@ -23,5 +28,21 @@ public class DepartmentServiceImpl implements DepartmentService{
 
         return DepartmentMapper.mapToDepartmentDto(savedDepartment);
     }
+
+    @Override
+    public DepartmentDto getDepartmentById(Long departmentId) {
+        Department department = departmentRepository.findById(departmentId).orElseThrow(
+            () -> new ResourceNotFoundException("Department is not exists in Given Id" +departmentId)
+        );
+        return DepartmentMapper.mapToDepartmentDto(department);
+    }
+
+    @Override
+    public List<DepartmentDto> getAllDepartments() {
+        List<Department> departments = departmentRepository.findAll();
+       return departments.stream().map((department) -> DepartmentMapper.mapToDepartmentDto(department))
+       .collect(Collectors.toList());
+    }
     
+
 }
