@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import nic.bastar.emp.DTO.EmployeeDto;
+import nic.bastar.emp.Entity.Department;
 import nic.bastar.emp.Entity.Employee;
 import nic.bastar.emp.Exception.ResourceNotFoundException;
 import nic.bastar.emp.Mapper.EmployeeMapper;
+import nic.bastar.emp.Repository.DepartmentRepository;
 import nic.bastar.emp.Repository.EmployeeRepository;
 import nic.bastar.emp.Services.EmployeeService;
 
@@ -18,12 +20,18 @@ import nic.bastar.emp.Services.EmployeeService;
 public class EmployeeServiceImpl implements EmployeeService{
 
     private EmployeeRepository employeeRepository;
+    private DepartmentRepository departmentRepository;
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
 
         //Convert Employee DTO Mapper to Employee Entity
         Employee employee=EmployeeMapper.mapTEmployee(employeeDto);
+
+        Department department = departmentRepository.findById(employeeDto.getdepartmentId())
+            .orElseThrow(() -> new ResourceNotFoundException("Department is not exists with Id :" +employeeDto.getdepartmentId()));
+        
+            employee.setDepartment(department);
 
         Employee savedEmployee=employeeRepository.save(employee);
 
@@ -58,7 +66,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         employee.setFirstName(updateEmployee.getFirstName());
         employee.setLastName(updateEmployee.getLastName());
         employee.setEmail(updateEmployee.getEmail());
-        employee.setDepartment(updateEmployee.getDesignation());
+        employee.setDesignation(updateEmployee.getDesignation());
 
         Employee updateEmp=employeeRepository.save(employee);
         

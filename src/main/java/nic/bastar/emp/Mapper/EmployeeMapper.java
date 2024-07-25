@@ -12,18 +12,19 @@ public class EmployeeMapper {
             employee.getFirstName(),
             employee.getLastName(),
             employee.getEmail(),
-            employee.getDepartment()
+            employee.getDesignation()
         );
     }
     
     //Convert Employee DTO to JPA Entity
     public static Employee mapTEmployee(EmployeeDto employeeDto){
-        return new Employee(
-            employeeDto.getId(),
-            employeeDto.getFirstName(),
-            employeeDto.getLastName(),
-            employeeDto.getEmail(),
-            employeeDto.getDesignation()
-        );
+         
+        Employee employee = new Employee();
+        employee.setId(employeeDto.getId());
+        employee.setFirstName(employeeDto.getFirstName());
+        employee.setLastName(employeeDto.getLastName());
+        employee.setEmail(employeeDto.getEmail());
+        employee.setDesignation(employeeDto.getDesignation());
+        return employee;
     }
 }

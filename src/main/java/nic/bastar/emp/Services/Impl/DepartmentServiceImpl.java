@@ -1,7 +1,6 @@
 package nic.bastar.emp.Services.Impl;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -43,6 +42,29 @@ public class DepartmentServiceImpl implements DepartmentService{
        return departments.stream().map((department) -> DepartmentMapper.mapToDepartmentDto(department))
        .collect(Collectors.toList());
     }
-    
 
+    @Override
+    public DepartmentDto updateDepartment(Long departmentId, DepartmentDto updateDepartmentDto) {
+
+        Department department = departmentRepository.findById(departmentId).orElseThrow(
+            () -> new ResourceNotFoundException("Department is not Exists with Given Id: " +departmentId)
+        );
+
+        department.setDepartmentName(updateDepartmentDto.getDepartmentName());
+        department.setDepartmentDescription(updateDepartmentDto.getDepartmentDescription());
+
+        Department savedDepartment = departmentRepository.save(department);
+
+        return DepartmentMapper.mapToDepartmentDto(savedDepartment);
+    }
+
+    @Override
+    public void deleteDepartment(Long departmentId) {
+        departmentRepository.findById(departmentId).orElseThrow(
+            () -> new ResourceNotFoundException("Department is not Exists with Given Id " + departmentId)
+        );
+
+        departmentRepository.deleteById(departmentId);
+    }
+    
 }
